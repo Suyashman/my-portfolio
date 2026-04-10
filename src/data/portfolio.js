@@ -107,7 +107,7 @@ export const certificates = [
     title: "C++ Intro",
     platform: "Sololearn",
     date: "May 2021",
-    credentialUrl: "/C++ CERT 1.pdf",
+    credentialUrl: "/CppCERT 1.pdf",
     category: "C++"
   },
   {
