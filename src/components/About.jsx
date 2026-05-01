@@ -7,7 +7,7 @@ const About = () => {
   return (
     <section id="about" className="py-20 relative">
       <div className="container mx-auto px-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -31,7 +31,7 @@ const About = () => {
               About Profile
               <div className="h-[1px] w-32 bg-sciCyan/50 flex-grow"></div>
             </h2>
-            
+
             <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed mb-6 font-sans">
               {userInfo.bio}
             </p>
@@ -48,12 +48,6 @@ const About = () => {
               </a>
               <a href={userInfo.social.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-sciBlue hover:text-sciBlue transition-colors text-slate-700 dark:text-slate-300 rounded-lg">
                 <FiLinkedin size={24} />
-              </a>
-              <a href={userInfo.social.twitter} target="_blank" rel="noopener noreferrer" className="p-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-sciCyan hover:text-sciCyan transition-colors text-slate-700 dark:text-slate-300 rounded-lg">
-                <FiTwitter size={24} />
-              </a>
-              <a href={`mailto:${userInfo.email}`} className="p-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-red-500 hover:text-red-500 transition-colors text-slate-700 dark:text-slate-300 rounded-lg">
-                <FiMail size={24} />
               </a>
             </div>
           </div>

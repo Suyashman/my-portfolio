@@ -6,7 +6,7 @@ import Skills from './components/Skills';
 import Education from './components/Education';
 import Certificates from './components/Certificates';
 import Projects from './components/Projects';
-import GitHub from './components/GitHub';
+
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
@@ -36,14 +36,14 @@ function App() {
       </div>
 
       <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      <main className="relative z-0">
+      <main className="relative">
         <Hero />
         <About />
         <Skills />
         <Education />
         <Certificates />
         <Projects />
-        <GitHub />
+
         <Contact />
       </main>
       <Footer />

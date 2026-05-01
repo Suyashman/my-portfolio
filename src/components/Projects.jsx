@@ -1,9 +1,15 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { projects } from '../data/portfolio';
-import { FiGithub, FiExternalLink, FiStar } from 'react-icons/fi';
+import { FiGithub, FiExternalLink, FiStar, FiFileText, FiX, FiYoutube } from 'react-icons/fi';
 
 const Projects = () => {
+  const [selectedDoc, setSelectedDoc] = useState(null);
+
+  const closeDoc = () => {
+    setSelectedDoc(null);
+  };
+
   return (
     <section id="projects" className="py-20 relative">
       <div className="container mx-auto px-6">
@@ -27,13 +33,31 @@ const Projects = () => {
               className="sci-pane p-6 flex flex-col h-full group hover:-translate-y-2 transition-all duration-300"
             >
               <div className="flex flex-col h-full relative z-10">
-                {project.featured && (
-                  <div className="absolute top-0 right-0 px-2 py-1 bg-sciBlue/10 text-sciBlue dark:bg-sciCyan/10 dark:text-sciCyan text-xs font-mono font-bold uppercase tracking-widest rounded">
-                    <FiStar className="inline mr-1" /> Featured
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex gap-2 flex-wrap">
+                    {project.featured && (
+                      <div className="px-2 py-1 bg-sciBlue/10 text-sciBlue dark:bg-sciCyan/10 dark:text-sciCyan text-xs font-mono font-bold uppercase tracking-widest rounded flex items-center">
+                        <FiStar className="inline mr-1" /> Featured
+                      </div>
+                    )}
+                    {project.type && (
+                      <div className={`px-2 py-1 text-xs font-mono font-bold uppercase tracking-widest rounded flex items-center ${
+                        project.type.toLowerCase() === 'solo' 
+                          ? 'bg-sciViolet/10 text-sciViolet dark:bg-sciViolet/20 dark:text-[#b084f5]' 
+                          : 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400'
+                      }`}>
+                        {project.type}
+                      </div>
+                    )}
                   </div>
-                )}
+                  {project.date && (
+                    <span className="text-xs font-mono text-slate-400 dark:text-slate-500 uppercase tracking-wider whitespace-nowrap ml-2 mt-1">
+                      {project.date}
+                    </span>
+                  )}
+                </div>
                 
-                <h3 className="text-xl md:text-2xl font-bold mb-3 text-slate-800 dark:text-white group-hover:text-sciBlue dark:group-hover:text-sciCyan transition-colors mr-6">
+                <h3 className="text-xl md:text-2xl font-bold mb-3 text-slate-800 dark:text-white group-hover:text-sciBlue dark:group-hover:text-sciCyan transition-colors">
                   {project.name}
                 </h3>
                 
@@ -52,7 +76,7 @@ const Projects = () => {
                   ))}
                 </div>
                 
-                <div className="flex gap-4 mt-auto pt-4 border-t border-slate-200 dark:border-white/10">
+                <div className="flex flex-wrap gap-4 mt-auto pt-4 border-t border-slate-200 dark:border-white/10">
                   {project.githubUrl && (
                     <a 
                       href={project.githubUrl} 
@@ -73,12 +97,66 @@ const Projects = () => {
                       <FiExternalLink size={16} /> Launch
                     </a>
                   )}
+                  {project.docUrl && (
+                    <button 
+                      onClick={() => setSelectedDoc(project)}
+                      className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 transition-colors flex items-center gap-2 font-mono text-sm uppercase"
+                    >
+                      <FiFileText size={16} /> Docs
+                    </button>
+                  )}
+                  {project.youtubeUrl && (
+                    <a 
+                      href={project.youtubeUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors flex items-center gap-2 font-mono text-sm uppercase"
+                    >
+                      <FiYoutube size={16} /> Demo
+                    </a>
+                  )}
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {selectedDoc && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-8"
+            onClick={closeDoc}
+          >
+            <button 
+              onClick={closeDoc}
+              className="absolute top-4 right-4 z-[110] p-3 rounded-full bg-slate-900/50 hover:bg-slate-900 border border-white/10 text-white transition-all shadow-lg"
+              title="Close Documentation"
+            >
+              <FiX size={24} />
+            </button>
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+              className="relative w-full max-w-6xl h-[90vh] bg-slate-800 rounded-xl overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <iframe 
+                src={selectedDoc.docUrl} 
+                className="w-full h-full border-none"
+                title={`${selectedDoc.name} Documentation`}
+                width="100%"
+                height="100%"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

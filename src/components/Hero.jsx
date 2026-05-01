@@ -1,91 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { userInfo } from '../data/portfolio';
-import { FiArrowRight, FiDownload } from 'react-icons/fi';
+import { FiArrowRight, FiDownload, FiX } from 'react-icons/fi';
 
-const Typewriter = ({ texts }) => {
-  const [currentText, setCurrentText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
+const FancyText = ({ texts }) => {
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    let timeout;
-    const currentFullText = texts[currentIndex];
-    
-    if (isDeleting) {
-      if (currentText === '') {
-        setIsDeleting(false);
-        setCurrentIndex((prev) => (prev + 1) % texts.length);
-        timeout = setTimeout(() => {}, 500); // Pause before typing next
-      } else {
-        timeout = setTimeout(() => {
-          setCurrentText(currentFullText.substring(0, currentText.length - 1));
-        }, 50);
-      }
-    } else {
-      if (currentText === currentFullText) {
-        timeout = setTimeout(() => {
-          setIsDeleting(true);
-        }, 2000); // Pause at end of text
-      } else {
-        timeout = setTimeout(() => {
-          setCurrentText(currentFullText.substring(0, currentText.length + 1));
-        }, 100);
-      }
-    }
-    return () => clearTimeout(timeout);
-  }, [currentText, isDeleting, currentIndex, texts]);
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % texts.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [texts]);
 
   return (
-    <span className="text-accentCyan font-semibold border-r-2 border-accentCyan pr-1 animate-pulse">
-      {currentText || '\u00A0'}
-    </span>
+    <div className="relative h-14 w-full flex items-center justify-center overflow-visible">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={index}
+          initial={{ y: 40, opacity: 0, scale: 0.8, filter: "blur(10px)", rotateX: -90 }}
+          animate={{ y: 0, opacity: 1, scale: 1, filter: "blur(0px)", rotateX: 0 }}
+          exit={{ y: -40, opacity: 0, scale: 1.1, filter: "blur(10px)", rotateX: 90 }}
+          transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
+          className="absolute text-2xl md:text-3xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-sciBlue via-sciCyan to-sciViolet uppercase tracking-widest whitespace-nowrap drop-shadow-[0_0_15px_rgba(0,240,255,0.5)]"
+          style={{ transformOrigin: "center center" }}
+        >
+          {texts[index]}
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 };
 
 const Hero = () => {
-  const [contactClicks, setContactClicks] = useState(0);
-  const [buttonMessage, setButtonMessage] = useState("Initiate Contact");
-  const [isWarping, setIsWarping] = useState(false);
-
-  const handleContactClick = (e) => {
-    if (contactClicks < 4) {
-      e.preventDefault();
-      const nextClicks = contactClicks + 1;
-      setContactClicks(nextClicks);
-      
-      if (nextClicks === 1) setButtonMessage("Establishing secure link...");
-      else if (nextClicks === 2) setButtonMessage("Bypassing firewall...");
-      else if (nextClicks === 3) setButtonMessage("Decrypting protocol...");
-      else if (nextClicks === 4) setButtonMessage("Handshake successful...");
-    } else if (contactClicks === 4) {
-      e.preventDefault();
-      setContactClicks(5);
-      setButtonMessage("Warping to comms...");
-      setIsWarping(true);
-      setTimeout(() => {
-        window.location.href = '#contact';
-        setIsWarping(false);
-        setContactClicks(0);
-        setButtonMessage("Initiate Contact");
-      }, 800);
-    }
-  };
+  const [showResume, setShowResume] = useState(false);
 
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20 pb-10">
-      {/* Easter Egg Warp Effect overlay */}
-      <AnimatePresence>
-        {isWarping && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 1 }}
-            animate={{ opacity: 1, scale: 20 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="absolute inset-0 z-50 bg-white dark:bg-sciCyan origin-center"
-          />
-        )}
-      </AnimatePresence>
 
       <div className="absolute top-1/4 -right-20 w-[30rem] h-[30rem] bg-sciCyan/10 dark:bg-sciCyan/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute -bottom-32 -left-20 w-[40rem] h-[40rem] bg-sciViolet/10 dark:bg-sciViolet/20 rounded-full blur-[150px] pointer-events-none" />
@@ -122,9 +73,9 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 font-mono mb-8 h-12"
+            className="w-full mb-8"
           >
-            <Typewriter texts={userInfo.taglines} />
+            <FancyText texts={userInfo.taglines} />
           </motion.div>
 
           <motion.p 
@@ -144,24 +95,58 @@ const Hero = () => {
           >
             <a 
               href="#contact" 
-              onClick={handleContactClick}
-              className={`relative overflow-hidden px-8 py-4 rounded-xl font-mono text-sm uppercase tracking-wider font-bold transition-all duration-300 flex items-center justify-center min-w-[280px]
-                ${contactClicks === 0 ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]' : 
-                  contactClicks === 5 ? 'bg-sciCyan text-slate-900 shadow-[0_0_30px_rgba(0,240,255,0.8)] animate-pulse' : 
-                  'bg-sciBlue text-white shadow-[0_0_15px_rgba(59,130,246,0.6)]'}
-              `}
+              className="relative overflow-hidden px-8 py-4 rounded-xl font-mono text-sm uppercase tracking-wider font-bold transition-all duration-300 flex items-center justify-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]"
             >
               <span className="relative z-10 flex items-center gap-2">
-                {buttonMessage} {contactClicks === 0 && <FiArrowRight />}
+                Initiate Contact <FiArrowRight />
               </span>
             </a>
             
-            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="px-8 py-4 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-sciBlue dark:hover:border-sciCyan text-slate-600 dark:text-slate-300 hover:text-sciBlue dark:hover:text-sciCyan font-mono text-sm uppercase tracking-wider transition-colors flex items-center gap-2">
+            <button 
+              onClick={() => setShowResume(true)}
+              className="px-8 py-4 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-sciBlue dark:hover:border-sciCyan text-slate-600 dark:text-slate-300 hover:text-sciBlue dark:hover:text-sciCyan font-mono text-sm uppercase tracking-wider transition-colors flex items-center gap-2"
+            >
               <FiDownload /> Resume.pdf
-            </a>
+            </button>
           </motion.div>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {showResume && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-8"
+            onClick={() => setShowResume(false)}
+          >
+            <button 
+              onClick={() => setShowResume(false)}
+              className="absolute top-4 right-4 z-[110] p-3 rounded-full bg-slate-900/50 hover:bg-slate-900 border border-white/10 text-white transition-all shadow-lg"
+              title="Close Resume"
+            >
+              <FiX size={24} />
+            </button>
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+              className="relative w-full max-w-6xl h-[90vh] bg-slate-800 rounded-xl overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <iframe 
+                src="/resume.pdf" 
+                className="w-full h-full border-none"
+                title="Resume"
+                width="100%"
+                height="100%"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
