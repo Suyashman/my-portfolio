@@ -9,12 +9,37 @@ const Contact = () => {
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real app, integrate Formspree or EmailJS here.
-    // Example: fetch('https://formspree.io/f/YOUR_FORM_ID', { method: 'POST', body: formData })
-    setStatus('Message sent successfully! (Demo mode)');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setStatus('Transmitting...');
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: "2549cf41-1b6c-4316-a3dc-29957dfd9fc5", 
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setStatus('Message sent successfully!');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setStatus('Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      setStatus('An error occurred. Please try again.');
+    }
+
     setTimeout(() => setStatus(''), 5000);
   };
 

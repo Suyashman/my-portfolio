@@ -20,7 +20,7 @@ const About = () => {
               <div className="absolute inset-0 bg-sciCyan dark:bg-sciBlue rounded-full rotate-6 opacity-20 group-hover:rotate-12 transition-transform duration-500"></div>
               <div className="absolute inset-0 bg-sciBlue dark:bg-sciCyan rounded-full -rotate-6 opacity-20 group-hover:-rotate-12 transition-transform duration-500"></div>
               <div className="relative sci-pane w-full h-full rounded-full flex items-center justify-center overflow-hidden border-2 border-sciCyan/30">
-                <span className="text-6xl animate-pulse-glow text-sciCyan font-mono">_SYS</span>
+                <img src="/pfp.jpg" alt="Profile" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
