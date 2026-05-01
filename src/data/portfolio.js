@@ -164,7 +164,7 @@ export const projects = [
     type: "Solo",
     docUrl: "REPORT2_TOMATO_SEGG.pdf",
     date: "December 2025",
-    youtubeUrl: "https://youtube.com/watch?v=dQw4w9WgXcQ",
+    youtubeUrl: "https://youtu.be/j0_QrHmIB4A",
   },
   {
     name: "Crop Disease Prediction",
@@ -196,8 +196,7 @@ export const projects = [
     liveUrl: false,
     featured: true,
     type: "Solo",
-    docUrl: "/resume.pdf",
-    date: "May 2021",
-    youtubeUrl: "https://youtube.com/watch?v=dQw4w9WgXcQ",
+    date: "May 2022",
+    youtubeUrl: "https://youtu.be/bteKJsQkAhw",
   }
 ];
