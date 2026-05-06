@@ -38,7 +38,7 @@ export const userInfo = {
     "Data Scientist",
     "Machine Learning Engineer"
   ],
-  bio: "I’m a B.Tech undergraduate passionate about building real-world tech solutions, especially in AI,ML,DL,IoT and computer vision. I’ve worked with technologies like Python,OpenCV, IoT, Arduino R4, ML and DL techniques to create practical, problem-solving projects. I’m always focused on improving my skills and turning ideas into something useful.",
+  bio: "I’m a B.Tech undergraduate passionate about building real-world technology solutions in AI, Machine Learning, Deep Learning, IoT, and Computer Vision. I enjoy creating practical, problem-solving projects using Python, OpenCV, Arduino R4, and modern development tools. I’m constantly improving my skills, exploring new technologies, and turning innovative ideas into impactful applications.",
   email: "2suyash@gmail.com",
   location: "Pune, Maharashtra, India",
   social: {
@@ -142,7 +142,7 @@ export const projects = [
     type: "Solo",
     docUrl: "REPORT1_VIDEO_STEG.pdf",
     date: "April 2026",
-    youtubeUrl: "https://youtube.com/watch?v=dQw4w9WgXcQ"
+    youtubeUrl: "https://youtu.be/dIMk9cMx3Lg"
   },
   {
     name: "Image Steganography",

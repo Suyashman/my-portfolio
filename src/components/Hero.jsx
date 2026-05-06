@@ -1,45 +1,78 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { userInfo } from '../data/portfolio';
 import { FiArrowRight, FiDownload, FiX } from 'react-icons/fi';
 
 const FancyText = ({ texts }) => {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % texts.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [texts]);
-
   return (
-    <div className="relative h-14 w-full flex items-center justify-center overflow-visible">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={index}
-          initial={{ y: 40, opacity: 0, scale: 0.8, filter: "blur(10px)", rotateX: -90 }}
-          animate={{ y: 0, opacity: 1, scale: 1, filter: "blur(0px)", rotateX: 0 }}
-          exit={{ y: -40, opacity: 0, scale: 1.1, filter: "blur(10px)", rotateX: 90 }}
-          transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-          className="absolute text-2xl md:text-3xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-sciBlue via-sciCyan to-sciViolet uppercase tracking-widest whitespace-nowrap drop-shadow-[0_0_15px_rgba(0,240,255,0.5)]"
-          style={{ transformOrigin: "center center" }}
-        >
-          {texts[index]}
-        </motion.div>
-      </AnimatePresence>
+    <div className="w-full flex flex-wrap items-center justify-center gap-3">
+      {texts.map((text, index) => (
+        <React.Fragment key={index}>
+          <span className="text-lg md:text-xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-sciBlue via-sciCyan to-sciViolet uppercase tracking-widest whitespace-nowrap drop-shadow-[0_0_15px_rgba(0,240,255,0.5)]">
+            {text}
+          </span>
+          {index < texts.length - 1 && (
+            <span className="text-sciBlue/50 text-xl">•</span>
+          )}
+        </React.Fragment>
+      ))}
     </div>
   );
 };
 
 const Hero = () => {
   const [showResume, setShowResume] = useState(false);
+  
+  // High-visibility dynamic tracking
+  const mouseX = useMotionValue(typeof window !== "undefined" ? window.innerWidth / 2 : 0);
+  const mouseY = useMotionValue(typeof window !== "undefined" ? window.innerHeight / 2 : 0);
+
+  // Smooth springs for a trailing "comet" effect
+  const springXSlow = useSpring(mouseX, { stiffness: 40, damping: 25 });
+  const springYSlow = useSpring(mouseY, { stiffness: 40, damping: 25 });
+  
+  const springXFast = useSpring(mouseX, { stiffness: 120, damping: 20 });
+  const springYFast = useSpring(mouseY, { stiffness: 120, damping: 20 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      // Use pageX/pageY so it tracks correctly even if scrolled slightly
+      mouseX.set(e.pageX);
+      mouseY.set(e.pageY);
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20 pb-10">
+    <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20 pb-10 bg-slate-50 dark:bg-transparent">
 
-      <div className="absolute top-1/4 -right-20 w-[30rem] h-[30rem] bg-sciCyan/10 dark:bg-sciCyan/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-32 -left-20 w-[40rem] h-[40rem] bg-sciViolet/10 dark:bg-sciViolet/20 rounded-full blur-[150px] pointer-events-none" />
+      {/* Subtle tech grid background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080801a_1px,transparent_1px),linear-gradient(to_bottom,#8080801a_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
+
+      {/* Large slow trailing glow */}
+      <motion.div 
+        className="absolute top-0 left-0 w-[45rem] h-[45rem] rounded-full pointer-events-none mix-blend-screen opacity-60 dark:opacity-40"
+        style={{
+          x: springXSlow,
+          y: springYSlow,
+          translateX: "-50%",
+          translateY: "-50%",
+          background: "radial-gradient(circle, rgba(0,240,255,0.2) 0%, rgba(139,92,246,0.05) 40%, transparent 70%)"
+        }}
+      />
+
+      {/* Small fast tracking core */}
+      <motion.div 
+        className="absolute top-0 left-0 w-[20rem] h-[20rem] rounded-full pointer-events-none mix-blend-screen opacity-80 dark:opacity-70"
+        style={{
+          x: springXFast,
+          y: springYFast,
+          translateX: "-50%",
+          translateY: "-50%",
+          background: "radial-gradient(circle, rgba(139,92,246,0.4) 0%, rgba(0,240,255,0.15) 50%, transparent 80%)"
+        }}
+      />
 
       <div className="container mx-auto px-6 z-10 flex flex-col items-center text-center">
         

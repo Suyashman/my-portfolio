@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { certificates } from '../data/portfolio';
-import { FiAward, FiExternalLink } from 'react-icons/fi';
+import { FiAward, FiExternalLink, FiX } from 'react-icons/fi';
 
-const CertificateCard = ({ cert, index }) => {
+const CertificateCard = ({ cert, index, onSelectPdf }) => {
   const [activePdfIndex, setActivePdfIndex] = useState(0);
   const hasMultiplePdfs = cert.pdfs && cert.pdfs.length > 0;
   const currentUrl = hasMultiplePdfs ? cert.pdfs[activePdfIndex].url : cert.credentialUrl;
@@ -65,7 +65,14 @@ const CertificateCard = ({ cert, index }) => {
           )}
           {/* Click overlay to still allow opening the cert in a new tab if needed */}
           {currentUrl && currentUrl !== '#' && (
-            <a href={currentUrl} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-10 cursor-pointer" title="View Full Certificate"></a>
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                onSelectPdf(currentUrl);
+              }} 
+              className="absolute inset-0 z-10 cursor-pointer w-full h-full opacity-0" 
+              title="View Full Certificate"
+            ></button>
           )}
         </div>
       </div>
@@ -74,6 +81,8 @@ const CertificateCard = ({ cert, index }) => {
 };
 
 const Certificates = () => {
+  const [selectedPdf, setSelectedPdf] = useState(null);
+
   return (
     <section id="certificates" className="py-20 relative bg-slate-50/50 dark:bg-transparent">
       <div className="container mx-auto px-6">
@@ -88,10 +97,46 @@ const Certificates = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {certificates.map((cert, index) => (
-            <CertificateCard key={index} cert={cert} index={index} />
+            <CertificateCard key={index} cert={cert} index={index} onSelectPdf={setSelectedPdf} />
           ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {selectedPdf && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-8"
+            onClick={() => setSelectedPdf(null)}
+          >
+            <button 
+              onClick={() => setSelectedPdf(null)}
+              className="absolute top-4 right-4 z-[110] p-3 rounded-full bg-slate-900/50 hover:bg-slate-900 border border-white/10 text-white transition-all shadow-lg"
+              title="Close Certificate"
+            >
+              <FiX size={24} />
+            </button>
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+              className="relative w-full max-w-6xl h-[90vh] bg-slate-800 rounded-xl overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <iframe 
+                src={selectedPdf} 
+                className="w-full h-full border-none bg-white"
+                title="Certificate"
+                width="100%"
+                height="100%"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
